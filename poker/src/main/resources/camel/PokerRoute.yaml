@@ -1,0 +1,7 @@
+- route:
+    id: pokerRoute
+    from:
+      uri: "direct:pokerData"
+      steps:
+        - process:
+            ref: "pokerProcessor"

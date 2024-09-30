@@ -1,7 +1,0 @@
-- route:
-    id: inputRoute
-    from:
-      uri: "direct:inputData"
-      steps:
-        - process:
-            ref: "inputProcessor"
