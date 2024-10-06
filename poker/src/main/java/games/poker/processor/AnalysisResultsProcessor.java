@@ -9,48 +9,55 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+import static games.poker.constants.PokerConstants.*;
+
 @Component
 public class AnalysisResultsProcessor implements Processor {
+
     @Override
     public void process(Exchange exchange) {
         PokerDto pokerDto = exchange.getIn().getBody(PokerDto.class);
         Hand hand = pokerDto.getHand();
+        StringBuilder handDesc = new StringBuilder();
 
-        StringBuilder sb = new StringBuilder();
-
-        if (hand.isStraight()) sb.append("Straight ");
-        if (hand.isFlush()) sb.append("Flush ");
-
-        if (!hand.isStraight() && !hand.isFlush()) {
-            String pair = null;
-            String secondPair = null;
-            String tripple = null;
-            for (var entry : hand.getCardsByValue().entrySet()) {
-                List<Card> cardsOfTheSameValue = entry.getValue();
-                int size = cardsOfTheSameValue.size();
-
-                switch (size) {
-                    case 2 -> {
-                        if (pair == null) pair = cardsOfTheSameValue.get(0).getValue();
-                        else secondPair = cardsOfTheSameValue.get(0).getValue();
-                    }
-                    case 3 -> tripple = cardsOfTheSameValue.get(0).getValue();
-                    case 4 -> sb.append("Four %ss ".formatted(cardsOfTheSameValue.get(0).getValue()));
-                    default -> {/*empty*/}
-                }
-
-            }
-
-            if (secondPair != null) sb.append("Two Pairs: %ss and %ss ".formatted(pair, secondPair));
-            else if (tripple != null) sb.append(pair != null ?
-                    "Full House: %ss over %ss".formatted(tripple, pair) :
-                    "Three of a kind: %ss".formatted(tripple));
-            else sb.append("Pair of %ss ".formatted(pair));
+        if (!hand.isValid()) handDesc.append(INVALID_HAND);
+        else if (!hand.isSecondaryAnalysisNeeded()) handDesc.append(getPrimaryResultsDescription(hand));
+        else {
+            if (hand.isStraight()) handDesc.append(STRAIGHT);
+            if (hand.isFlush()) handDesc.append(FLUSH);
         }
 
-        if (sb.toString().endsWith(" ")) sb.append("with %s high".formatted(hand.getHighCard()));
-        if (sb.isEmpty()) sb.append("%s high".formatted(hand.getHighCard()));
+        if (handDesc.toString().endsWith(" ")) handDesc.append(WITH_HIGH_CARD.formatted(hand.getHighCard()));
+        if (handDesc.isEmpty()) handDesc.append(NOTHING.formatted(hand.getHighCard()));
 
-        pokerDto.setResponse(sb.toString());
+        pokerDto.setResponse(handDesc.toString());
+    }
+
+    private String getPrimaryResultsDescription(Hand hand) {
+        String pair = null;
+        String secondPair = null;
+        String threeOfAKind = null;
+        for (var entry : hand.getCardsByValue().entrySet()) {
+            List<Card> cardsOfTheSameValue = entry.getValue();
+            int size = cardsOfTheSameValue.size();
+
+            switch (size) {
+                case 2 -> {
+                    if (pair == null) pair = cardsOfTheSameValue.get(0).getValue();
+                    else secondPair = cardsOfTheSameValue.get(0).getValue();
+                }
+                case 3 -> threeOfAKind = cardsOfTheSameValue.get(0).getValue();
+                case 4 -> {
+                    return FOUR_OF_A_KIND.formatted(cardsOfTheSameValue.get(0).getValue());
+                }
+                default -> { /*empty*/ }
+            }
+        }
+
+        if (secondPair != null) return TWO_PAIRS.formatted(pair, secondPair);
+        if (threeOfAKind != null) return pair != null ?
+                FULL_HOUSE.formatted(threeOfAKind, pair) :
+                THREE_OF_A_KIND.formatted(threeOfAKind);
+        return PAIR.formatted(pair);
     }
 }
