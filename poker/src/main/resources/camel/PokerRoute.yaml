@@ -4,4 +4,11 @@
       uri: "direct:pokerData"
       steps:
         - process:
-            ref: "pokerProcessor"
+            ref: "primaryAnalysisProcessor"
+        - filter:
+            simple: "${in.body.hand.isSecondaryAnalysisNeeded()}"
+            steps:
+              - process:
+                  ref: "secondaryAnalysisProcessor"
+        - process:
+            ref: "analysisResultsProcessor"

@@ -4,7 +4,7 @@ import lombok.Data;
 
 @Data
 public class PokerDto {
-
-    private Card[] request;
+    private Hand hand;
     private String response;
+
 }

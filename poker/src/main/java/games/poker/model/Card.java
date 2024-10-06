@@ -2,10 +2,12 @@ package games.poker.model;
 
 import lombok.Data;
 
+import java.io.Serializable;
 import java.util.Map;
+import java.util.Objects;
 
 @Data
-public class Card {
+public class Card implements Serializable {
 
     private String suit;
     private String value;
@@ -28,23 +30,33 @@ public class Card {
     }
 
     public boolean isHigherThan(Card other) {
-        if (other == null || getStrength() > other.getStrength()) {
-            return true;
-        }
-        else if (getStrength() < other.getStrength()) {
-            return false;
-        }
-        else {
-            return suitStrengths.get(this.suit) > suitStrengths.get(other.suit);
-        }
+        if (other == null || this.getStrength() > other.getStrength()) return true;
+        else if (this.getStrength() < other.getStrength()) return false;
+        else return suitStrengths.get(this.suit) > suitStrengths.get(other.suit);
     }
 
     public int getStrength() {
+        if (strength > 0) return strength;
+
         try {
             strength = Integer.parseInt(value);
         } catch (NumberFormatException nfe) {
-            return valueStrengths.get(value);
+            strength = valueStrengths.get(value);
         }
+
         return strength;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Card card = (Card) o;
+        return suit.equals(card.suit) && value.equals(card.value);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(suit, value);
     }
 }
