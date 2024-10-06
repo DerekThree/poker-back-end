@@ -20,8 +20,9 @@ public class AnalysisResultsProcessor implements Processor {
         Hand hand = pokerDto.getHand();
         StringBuilder handDesc = new StringBuilder();
 
-        if (!hand.isValid()) handDesc.append(INVALID_HAND);
-        else if (!hand.isSecondaryAnalysisNeeded()) handDesc.append(getPrimaryResultsDescription(hand));
+        if (!hand.isSecondaryAnalysisNeeded()) handDesc.append(getPrimaryResultsDescription(hand));
+        else if (hand.isStraight() && hand.isFlush() && hand.getHighCard().getValue().equals("A"))
+            handDesc.append(ROYAL_FLUSH.formatted(hand.get(0).getSuit()));
         else {
             if (hand.isStraight()) handDesc.append(STRAIGHT);
             if (hand.isFlush()) handDesc.append(FLUSH);

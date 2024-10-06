@@ -11,17 +11,20 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
+import static games.poker.constants.PokerConstants.INVALID_HAND;
+
 @Component
 public class PrimaryAnalysisProcessor implements Processor {
 
     @Override
     // checks if the hand has no duplicates, groups cards of the same value, and picks the high card
     public void process(Exchange exchange) {
-        Hand hand = exchange.getIn().getBody(PokerDto.class).getHand();
+        PokerDto pokerDto = exchange.getIn().getBody(PokerDto.class);
+        Hand hand = pokerDto.getHand();
 
         int numberOfUniqueCards = new HashSet<>(hand).size();
-        hand.setValid(hand.size() == numberOfUniqueCards);
-        if (!hand.isValid()) {
+        if (hand.size() != numberOfUniqueCards) {
+            pokerDto.setResponse(INVALID_HAND);
             return;
         }
 

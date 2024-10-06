@@ -15,10 +15,9 @@ public class Hand extends ArrayList<Card> {
     private transient Card highCard;
     private boolean straight;
     private boolean flush;
-    private boolean valid;
 
     public boolean isSecondaryAnalysisNeeded() {
-        return valid && cardsByValue.size() == this.size() ;
+        return cardsByValue.size() == this.size() ;
     }
 
     public Hand(List<Card> cards) {
