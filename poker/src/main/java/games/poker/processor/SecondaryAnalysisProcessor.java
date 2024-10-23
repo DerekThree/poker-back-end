@@ -7,13 +7,11 @@ import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
-
 @Component
 public class SecondaryAnalysisProcessor implements Processor {
 
     @Override
-    // checks for straight and flush
+    // Checks for straight and flush
     public void process(Exchange exchange) {
         Hand hand = exchange.getIn().getBody(PokerDto.class).getHand();
 

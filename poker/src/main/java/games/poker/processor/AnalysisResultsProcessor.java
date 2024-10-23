@@ -31,6 +31,8 @@ public class AnalysisResultsProcessor implements Processor {
         if (handDesc.toString().endsWith(" ")) handDesc.append(WITH_HIGH_CARD.formatted(hand.getHighCard()));
         if (handDesc.isEmpty()) handDesc.append(NOTHING.formatted(hand.getHighCard()));
 
+
+
         pokerDto.setResponse(handDesc.toString());
     }
 

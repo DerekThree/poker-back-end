@@ -17,17 +17,19 @@ import static games.poker.constants.PokerConstants.INVALID_HAND;
 public class PrimaryAnalysisProcessor implements Processor {
 
     @Override
-    // checks if the hand has no duplicates, groups cards of the same value, and picks the high card
+    // Checks if the hand has no duplicates, groups cards of the same value, and picks the high card
     public void process(Exchange exchange) {
         PokerDto pokerDto = exchange.getIn().getBody(PokerDto.class);
         Hand hand = pokerDto.getHand();
 
+        // Check if the hand is valid
         int numberOfUniqueCards = new HashSet<>(hand).size();
-        if (hand.size() != numberOfUniqueCards) {
+        if (numberOfUniqueCards != hand.size() || hand.isEmpty()) {
             pokerDto.setResponse(INVALID_HAND);
             return;
         }
 
+        // Group cards by value and pick the high card
         for (Card card : hand) {
             List<Card> listOfCardsWithThisValue = hand.getCardsByValue().computeIfAbsent(card.getValue(), k -> new ArrayList<>());
             listOfCardsWithThisValue.add(card);
