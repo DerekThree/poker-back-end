@@ -2,7 +2,7 @@ package games.poker.controller;
 
 import games.poker.model.Card;
 import games.poker.model.Hand;
-import games.poker.dto.request.HandRequestDto;
+import games.poker.dto.processor.HandProcessorDto;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.CamelExecutionException;
 import org.apache.camel.ProducerTemplate;
@@ -25,15 +25,15 @@ public class PokerController {
     public ResponseEntity<String> process(@RequestBody List<Card> body) {
         log.info("Received request: {}", body);
 
-        HandRequestDto handRequestDto = new HandRequestDto();
-        handRequestDto.setRequest(new Hand(body));
+        HandProcessorDto handProcessorDto = new HandProcessorDto();
+        handProcessorDto.setRequest(new Hand(body));
 
         try {
-            producerTemplate.sendBody("direct:handData", handRequestDto);
+            producerTemplate.sendBody("direct:handData", handProcessorDto);
         } catch (CamelExecutionException ex) {
             log.error("Camel route exception: {}", ex.getExchange().getException().getMessage());
         }
 
-        return ResponseEntity.ok(handRequestDto.getResponse());
+        return ResponseEntity.ok(handProcessorDto.getResponse());
     }
 }

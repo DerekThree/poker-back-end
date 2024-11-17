@@ -2,7 +2,7 @@ package games.poker.processor.hand;
 
 import games.poker.model.Card;
 import games.poker.model.Hand;
-import games.poker.dto.request.HandRequestDto;
+import games.poker.dto.processor.HandProcessorDto;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
@@ -15,7 +15,7 @@ public class SecondaryAnalysisProcessor implements Processor {
     @Override
     // Checks for straight and flush
     public void process(Exchange exchange) {
-        Hand hand = exchange.getIn().getBody(HandRequestDto.class).getRequest();
+        Hand hand = exchange.getIn().getBody(HandProcessorDto.class).getRequest();
 
         log.debug("Checking for a straight");
         hand.setStraight(true);

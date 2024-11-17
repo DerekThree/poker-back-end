@@ -18,12 +18,26 @@ public class S3Controller {
     @Autowired
     private ProducerTemplate producerTemplate;
 
-    @GetMapping("/{username}")
-    public ResponseEntity<S3ResponseDto> getFiles(@PathVariable String username) {
-        log.info("Received request for user: {}", username);
+    @GetMapping
+    public ResponseEntity<S3ResponseDto> getFiles(@RequestBody S3RequestDto request) {
+        log.info("Received get files request: {}", request);
+        return process(request);
+    }
 
-        S3ProcessorDto s3ProcessorDto = new S3ProcessorDto();
-        s3ProcessorDto.setRequest(new S3RequestDto("get", username));
+    @PostMapping
+    public ResponseEntity<S3ResponseDto> postFile(@RequestBody S3RequestDto request) {
+        log.info("Received post file request: {}", request);
+        return process(request);
+    }
+
+    @DeleteMapping
+    public ResponseEntity<S3ResponseDto> deleteFile(@RequestBody S3RequestDto request) {
+        log.info("Received delete file request: {}", request);
+        return process(request);
+    }
+
+    private ResponseEntity<S3ResponseDto> process(S3RequestDto request) {
+        var s3ProcessorDto = new S3ProcessorDto(request, new S3ResponseDto());
 
         try {
             producerTemplate.sendBody("direct:s3Data", s3ProcessorDto);

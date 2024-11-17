@@ -11,7 +11,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class S3RequestDto {
 
+    private String username;
+
+    private String filename;
     private String method;
 
-    private String username;
 }

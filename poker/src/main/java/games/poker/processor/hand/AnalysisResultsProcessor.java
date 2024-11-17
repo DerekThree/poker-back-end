@@ -2,7 +2,7 @@ package games.poker.processor.hand;
 
 import games.poker.model.Card;
 import games.poker.model.Hand;
-import games.poker.dto.request.HandRequestDto;
+import games.poker.dto.processor.HandProcessorDto;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
@@ -19,8 +19,8 @@ public class AnalysisResultsProcessor implements Processor {
     // Creates a hand description
     @Override
     public void process(Exchange exchange) {
-        HandRequestDto handRequestDto = exchange.getIn().getBody(HandRequestDto.class);
-        Hand hand = handRequestDto.getRequest();
+        HandProcessorDto handProcessorDto = exchange.getIn().getBody(HandProcessorDto.class);
+        Hand hand = handProcessorDto.getRequest();
         StringBuilder handDesc = new StringBuilder();
 
         log.info("Creating the hand description");
@@ -52,7 +52,7 @@ public class AnalysisResultsProcessor implements Processor {
             handDesc.append(NOTHING.formatted(hand.getHighCard()));
         }
 
-        handRequestDto.setResponse(handDesc.toString());
+        handProcessorDto.setResponse(handDesc.toString());
     }
 
     // Describes a pair, 3, or 4 of a kind

@@ -2,7 +2,7 @@ package games.poker.processor.hand;
 
 import games.poker.model.Card;
 import games.poker.model.Hand;
-import games.poker.dto.request.HandRequestDto;
+import games.poker.dto.processor.HandProcessorDto;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
@@ -21,14 +21,14 @@ public class PrimaryAnalysisProcessor implements Processor {
     @Override
     // Checks if the hand has no duplicates, groups cards of the same value, and picks the high card
     public void process(Exchange exchange) {
-        HandRequestDto handRequestDto = exchange.getIn().getBody(HandRequestDto.class);
-        Hand hand = handRequestDto.getRequest();
+        HandProcessorDto handProcessorDto = exchange.getIn().getBody(HandProcessorDto.class);
+        Hand hand = handProcessorDto.getRequest();
         log.info("Processing hand: {}", hand);
 
         log.debug("Checking if the hand is valid");
         int numberOfUniqueCards = new HashSet<>(hand).size();
         if (numberOfUniqueCards != hand.size() || hand.isEmpty()) {
-            handRequestDto.setResponse(INVALID_HAND);
+            handProcessorDto.setResponse(INVALID_HAND);
             return;
         }
 
