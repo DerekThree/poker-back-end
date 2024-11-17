@@ -1,12 +1,12 @@
 - route:
-    id: pokerRoute
+    id: handRoute
     from:
-      uri: direct:pokerData
+      uri: direct:handData
       steps:
         - process:
             ref: primaryAnalysisProcessor
         - filter:
-            simple: ${in.body.hand.isSecondaryAnalysisNeeded()}
+            simple: ${in.body.request.isSecondaryAnalysisNeeded()}
             steps:
               - process:
                   ref: secondaryAnalysisProcessor

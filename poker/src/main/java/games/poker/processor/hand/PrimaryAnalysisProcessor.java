@@ -1,8 +1,9 @@
-package games.poker.processor;
+package games.poker.processor.hand;
 
 import games.poker.model.Card;
 import games.poker.model.Hand;
-import games.poker.model.PokerDto;
+import games.poker.dto.request.HandRequestDto;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 import org.springframework.stereotype.Component;
@@ -13,23 +14,25 @@ import java.util.List;
 
 import static games.poker.constants.PokerConstants.INVALID_HAND;
 
+@Slf4j
 @Component
 public class PrimaryAnalysisProcessor implements Processor {
 
     @Override
     // Checks if the hand has no duplicates, groups cards of the same value, and picks the high card
     public void process(Exchange exchange) {
-        PokerDto pokerDto = exchange.getIn().getBody(PokerDto.class);
-        Hand hand = pokerDto.getHand();
+        HandRequestDto handRequestDto = exchange.getIn().getBody(HandRequestDto.class);
+        Hand hand = handRequestDto.getRequest();
+        log.info("Processing hand: {}", hand);
 
-        // Check if the hand is valid
+        log.debug("Checking if the hand is valid");
         int numberOfUniqueCards = new HashSet<>(hand).size();
         if (numberOfUniqueCards != hand.size() || hand.isEmpty()) {
-            pokerDto.setResponse(INVALID_HAND);
+            handRequestDto.setResponse(INVALID_HAND);
             return;
         }
 
-        // Group cards by value and pick the high card
+        log.debug("Grouping cards by value and picking the high card");
         for (Card card : hand) {
             List<Card> listOfCardsWithThisValue = hand.getCardsByValue().computeIfAbsent(card.getValue(), k -> new ArrayList<>());
             listOfCardsWithThisValue.add(card);
