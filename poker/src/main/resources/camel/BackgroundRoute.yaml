@@ -1,0 +1,12 @@
+- route:
+    id: backgroundRoute
+    from:
+      uri: direct:backgroundData
+      steps:
+        - filter:
+            simple: "${in.body.request.method} == 'put'"
+            steps:
+              - process:
+                  ref: setBackgroundProcessor
+        - process:
+            ref: getBackgroundProcessor

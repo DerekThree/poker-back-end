@@ -1,8 +1,21 @@
 package games.poker.service;
 
+import com.amazonaws.services.s3.model.S3ObjectInputStream;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.web.multipart.MultipartFile;
+
 import java.util.List;
 
 public interface S3Service {
 
-    public List<String> getFileNames(String prefix);
+    List<String> getFileNames(String prefix);
+
+    InputStreamResource getFile(String key);
+
+    void postFile(String prefix, MultipartFile file);
+
+    void deleteFile(String key);
+
+    public void copyFile(String oldKey, String newKey);
+
 }

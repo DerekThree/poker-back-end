@@ -1,18 +1,19 @@
-package games.poker.dto.response;
+package games.poker.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class S3ResponseDto {
+public class BackgroundRequestDto {
 
-    private List<String> filesNames;
+    private String method;
 
+    private String username;
+
+    private String filename;
 }

@@ -1,17 +1,17 @@
 - route:
     id: s3Route
     from:
-      uri: direct:s3Data
+      uri: direct:s3Files
       steps:
         - choice:
             when:
-              - simple: "${in.body.request.getMethod()} == 'post'"
+              - simple: "${in.body.request.method} == 'post'"
                 steps:
                   - process:
-                      ref: s3PostProcessor
-              - simple: "${in.body.request.getMethod()} == 'delete'"
+                      ref: postS3FilesProcessor
+              - simple: "${in.body.request.method} == 'delete'"
                 steps:
                   - process:
-                      ref: s3DeleteProcessor
+                      ref: deleteS3FilesProcessor
         - process:
-            ref: s3GetProcessor
+            ref: getS3FilesProcessor
