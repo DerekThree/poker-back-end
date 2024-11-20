@@ -54,18 +54,6 @@
 		</repository>
 	</repositories>
 
-<!--	<dependencyManagement>-->
-<!--		<dependencies>-->
-<!--			<dependency>-->
-<!--				<groupId>org.springframework.cloud</groupId>-->
-<!--				<artifactId>spring-cloud-commons</artifactId>-->
-<!--				<version>4.1.4</version>-->
-<!--				<type>pom</type>-->
-<!--				<scope>import</scope>-->
-<!--			</dependency>-->
-<!--		</dependencies>-->
-<!--	</dependencyManagement>-->
-
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -140,36 +128,14 @@
 			<artifactId>aws-java-sdk-s3</artifactId>
 			<version>1.12.118</version>
 		</dependency>
-
-
-
+		<dependency>
+			<groupId>org.springframework.kafka</groupId>
+			<artifactId>spring-kafka</artifactId>
+			<version>3.3.0</version>
+		</dependency>
 
 
 		<!-- End AWS -->
-
-
-		<!--		OKTA      -->
-<!--		<dependency>-->
-<!--			<groupId>com.okta</groupId>-->
-<!--			<artifactId>okta-spring-boot-starter</artifactId>-->
-<!--			<version>3.0.5</version>-->
-<!--		</dependency>-->
-<!--		<dependency>-->
-<!--			<groupId>org.springframework.boot</groupId>-->
-<!--			<artifactId>spring-boot-starter-oauth2-client</artifactId>-->
-<!--		</dependency>-->
-<!--		<dependency>-->
-<!--			<groupId>org.springframework.boot</groupId>-->
-<!--			<artifactId>spring-boot-starter-thymeleaf</artifactId>-->
-<!--		</dependency>-->
-<!--		<dependency>-->
-<!--			<groupId>org.thymeleaf.extras</groupId>-->
-<!--			<artifactId>thymeleaf-extras-springsecurity6</artifactId>-->
-<!--		</dependency>-->
-<!--		<dependency>-->
-<!--			<groupId>nz.net.ultraq.thymeleaf</groupId>-->
-<!--			<artifactId>thymeleaf-layout-dialect</artifactId>-->
-<!--		</dependency>-->
 
 	</dependencies>
 
@@ -178,6 +144,13 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+					<mainClass>com.baeldung.spring.kafka.KafkaApplication</mainClass>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>

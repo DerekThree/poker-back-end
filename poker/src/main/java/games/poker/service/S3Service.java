@@ -1,6 +1,5 @@
 package games.poker.service;
 
-import com.amazonaws.services.s3.model.S3ObjectInputStream;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.web.multipart.MultipartFile;
 

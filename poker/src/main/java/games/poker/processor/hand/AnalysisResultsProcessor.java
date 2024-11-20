@@ -3,9 +3,11 @@ package games.poker.processor.hand;
 import games.poker.model.Card;
 import games.poker.model.Hand;
 import games.poker.dto.processor.HandProcessorDto;
+import games.poker.service.KafkaService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -15,6 +17,9 @@ import static games.poker.constants.PokerConstants.*;
 @Slf4j
 @Component
 public class AnalysisResultsProcessor implements Processor {
+
+    @Autowired
+    KafkaService kafkaService;
 
     // Creates a hand description
     @Override
@@ -51,6 +56,8 @@ public class AnalysisResultsProcessor implements Processor {
             log.debug("Only high card");
             handDesc.append(NOTHING.formatted(hand.getHighCard()));
         }
+
+        kafkaService.sendMessage(handDesc.toString());
 
         handProcessorDto.setResponse(handDesc.toString());
     }
