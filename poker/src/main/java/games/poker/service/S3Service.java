@@ -6,6 +6,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 public interface S3Service {
+    void createNewUserFiles(String username);
 
     List<String> getFileNames(String prefix);
 
@@ -15,6 +16,6 @@ public interface S3Service {
 
     void deleteFile(String key);
 
-    public void copyFile(String oldKey, String newKey);
+    void copyFile(String oldKey, String newKey);
 
 }

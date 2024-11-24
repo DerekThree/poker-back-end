@@ -1,0 +1,7 @@
+- route:
+    id: registerUserRoute
+    from:
+      uri: direct:registerUser
+      steps:
+        - process:
+            ref: registerUserProcessor

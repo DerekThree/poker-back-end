@@ -17,7 +17,7 @@ import java.util.List;
 
 @Slf4j
 @Service
-public class S3ServiceImpl implements S3Service{
+public class S3ServiceImpl implements S3Service {
 
     @Value("${aws.s3.bucket}")
     private String bucketName;
@@ -26,6 +26,8 @@ public class S3ServiceImpl implements S3Service{
     private String region;
 
     private AmazonS3 s3;
+
+    private final String DEFAULT_BACKGROUND = "default.jpg";
 
     @PostConstruct
     public void init() {
@@ -103,6 +105,11 @@ public class S3ServiceImpl implements S3Service{
         }
     }
 
+    @Override
+    public void createNewUserFiles(String username) {
+        copyFile(DEFAULT_BACKGROUND, username + "/" + DEFAULT_BACKGROUND);
+        copyFile(DEFAULT_BACKGROUND, username + "-active/" + DEFAULT_BACKGROUND);
+    }
     private String truncateFolderName(String fileKey) {
         return fileKey.substring(fileKey.lastIndexOf('/') + 1);
     }
