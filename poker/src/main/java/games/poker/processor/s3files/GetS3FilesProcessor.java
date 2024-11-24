@@ -25,6 +25,6 @@ public class GetS3FilesProcessor implements Processor {
 
         String username = request.getUsername();
         S3FilesResponseDto response = processorDto.getResponse();
-        response.setFileNames(s3ServiceImpl.getFileNames(username + "/"));
+        response.setFiles(s3ServiceImpl.getFiles(username + "/"));
     }
 }

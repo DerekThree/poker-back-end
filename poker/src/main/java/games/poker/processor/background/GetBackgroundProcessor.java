@@ -2,6 +2,7 @@ package games.poker.processor.background;
 
 import games.poker.dto.processor.BackgroundProcessorDto;
 import games.poker.dto.request.BackgroundRequestDto;
+import games.poker.model.FileData;
 import games.poker.service.S3ServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.Exchange;
@@ -25,12 +26,12 @@ public class GetBackgroundProcessor implements Processor {
         log.info("Processing get background request: {}", request);
 
         String prefix = request.getUsername() + "-active/";
-        List<String> fileNames = s3ServiceImpl.getFileNames(prefix);
-        if (fileNames.size() > 1) {
-            log.warn("Multiple files found in active background directory: {}", fileNames);
+        List<FileData> files = s3ServiceImpl.getFiles(prefix);
+        if (files.size() > 1) {
+            log.warn("Multiple files found in active background directory: {}", files);
         }
 
-        String fileKey = prefix + fileNames.get(0);
+        String fileKey = prefix + files.get(0).getName();
         processorDto.setResponse(s3ServiceImpl.getFile(fileKey));
     }
 }

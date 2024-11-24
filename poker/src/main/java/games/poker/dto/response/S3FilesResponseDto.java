@@ -1,5 +1,6 @@
 package games.poker.dto.response;
 
+import games.poker.model.FileData;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,6 +14,6 @@ import java.util.List;
 @AllArgsConstructor
 public class S3FilesResponseDto {
 
-    private List<String> fileNames;
+    private List<FileData> files;
 
 }

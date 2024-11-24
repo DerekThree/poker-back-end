@@ -5,6 +5,7 @@ import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.*;
+import games.poker.model.FileData;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,6 +14,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Slf4j
@@ -39,22 +42,32 @@ public class S3ServiceImpl implements S3Service {
     }
 
     @Override
-    public List<String> getFileNames(String prefix) {
+    public List<FileData> getFiles(String prefix) {
         log.info("Fetching file summaries from S3 for prefix {}", prefix);
         ListObjectsV2Result result;
         try {
             result = s3.listObjectsV2(bucketName, prefix);
         } catch (Exception e) {
-            log.error("Error fetching file names from S3: {}", e.getMessage());
+            log.error("Error fetching files from S3: {}", e.getMessage());
             throw new RuntimeException("Error fetching file names from S3", e);
         }
 
-        List<String> filenames = result.getObjectSummaries().stream()
-                .map(S3ObjectSummary::getKey)
-                .map(this::truncateFolderName)
-                .toList();
-        log.info("Returning S3 file names: {}", filenames);
-        return filenames;
+        List<S3ObjectSummary> fileSummaries = result.getObjectSummaries();
+        List<FileData> files = new ArrayList<>();
+        for (S3ObjectSummary fileSummary: fileSummaries) {
+            String key = fileSummary.getKey();
+            String name = truncateFolderName(key);
+            String url = generatePresignedUrl(key);
+            FileData fileData = new FileData(name, url);
+            files.add(fileData);
+        }
+
+//        List<String> filenames = result.getObjectSummaries().stream()
+//                .map(S3ObjectSummary::getKey)
+//                .map(this::generatePresignedUrl)
+//                .toList();
+        log.info("Returning S3 files: {}", files);
+        return files;
     }
 
     @Override
@@ -110,6 +123,17 @@ public class S3ServiceImpl implements S3Service {
         copyFile(DEFAULT_BACKGROUND, username + "/" + DEFAULT_BACKGROUND);
         copyFile(DEFAULT_BACKGROUND, username + "-active/" + DEFAULT_BACKGROUND);
     }
+
+    private String generatePresignedUrl(String objectKey) {
+        Date expiration = new Date(System.currentTimeMillis() + 1000 * 60 * 60); // 1 hour expiration
+
+        GeneratePresignedUrlRequest generatePresignedUrlRequest = new GeneratePresignedUrlRequest(bucketName, objectKey)
+                .withMethod(com.amazonaws.HttpMethod.GET)
+                .withExpiration(expiration);
+
+        return s3.generatePresignedUrl(generatePresignedUrlRequest).toString();
+    }
+
     private String truncateFolderName(String fileKey) {
         return fileKey.substring(fileKey.lastIndexOf('/') + 1);
     }
