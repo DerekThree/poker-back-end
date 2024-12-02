@@ -1,5 +1,6 @@
 package games.poker.service;
 
+import com.amazonaws.HttpMethod;
 import com.amazonaws.auth.DefaultAWSCredentialsProviderChain;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3;
@@ -56,18 +57,19 @@ public class S3ServiceImpl implements S3Service {
         List<FileData> files = new ArrayList<>();
         for (S3ObjectSummary fileSummary: fileSummaries) {
             String key = fileSummary.getKey();
-            String name = truncateFolderName(key);
-            String url = generatePresignedUrl(key);
+            String name = prefix.isBlank() ? key : truncateFolderName(key);
+            String url = generatePresignedUrl(key, com.amazonaws.HttpMethod.GET);
             FileData fileData = new FileData(name, url);
             files.add(fileData);
         }
 
-//        List<String> filenames = result.getObjectSummaries().stream()
-//                .map(S3ObjectSummary::getKey)
-//                .map(this::generatePresignedUrl)
-//                .toList();
         log.info("Returning S3 files: {}", files);
         return files;
+    }
+
+    @Override
+    public String getUploadUrl(String key) {
+        return generatePresignedUrl(key, com.amazonaws.HttpMethod.PUT);
     }
 
     @Override
@@ -85,6 +87,7 @@ public class S3ServiceImpl implements S3Service {
     }
 
     @Override
+    // Legacy method
     public void postFile(String prefix, MultipartFile file) {
         String key = prefix + "/" + file.getOriginalFilename();
         log.info("Posting file {} to S3", key);
@@ -120,15 +123,16 @@ public class S3ServiceImpl implements S3Service {
 
     @Override
     public void createNewUserFiles(String username) {
+        log.debug("Creating new user files");
         copyFile(DEFAULT_BACKGROUND, username + "/" + DEFAULT_BACKGROUND);
         copyFile(DEFAULT_BACKGROUND, username + "-active/" + DEFAULT_BACKGROUND);
     }
 
-    private String generatePresignedUrl(String objectKey) {
+    private String generatePresignedUrl(String objectKey, com.amazonaws.HttpMethod method) {
         Date expiration = new Date(System.currentTimeMillis() + 1000 * 60 * 60); // 1 hour expiration
 
         GeneratePresignedUrlRequest generatePresignedUrlRequest = new GeneratePresignedUrlRequest(bucketName, objectKey)
-                .withMethod(com.amazonaws.HttpMethod.GET)
+                .withMethod(method)
                 .withExpiration(expiration);
 
         return s3.generatePresignedUrl(generatePresignedUrlRequest).toString();

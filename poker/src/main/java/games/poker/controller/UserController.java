@@ -8,10 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.ProducerTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
@@ -22,7 +19,9 @@ public class UserController {
     private ProducerTemplate producerTemplate;
 
     @PostMapping(value = "/register")
-    public ResponseEntity<String> registerUser(@RequestBody RegisterUserRequestDto request) {
+    public ResponseEntity<String> registerUser(@RequestHeader("X-Username") String username,
+                                               @RequestBody RegisterUserRequestDto request) {
+        request.getProfile().setEmail(username);
         log.info("Received register user request: {}", request);
         var processorDto = RegisterUserProcessorDto.builder().request(request).build();
 

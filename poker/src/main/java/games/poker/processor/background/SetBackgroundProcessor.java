@@ -24,6 +24,9 @@ public class SetBackgroundProcessor implements Processor {
         BackgroundRequestDto request = exchange.getIn().getBody(BackgroundProcessorDto.class).getRequest();
         log.info("Processing set background request: {}", request);
 
+        String filename = request.getFilename();
+        if (filename.contains("-active/")) return;
+
         String username = request.getUsername();
         String activeDir = username + "-active/";
 
@@ -36,8 +39,8 @@ public class SetBackgroundProcessor implements Processor {
             s3ServiceImpl.deleteFile(activeDir + oldBackground.getName());
         }
 
-        String newBackgroundFileName = request.getFilename();
-        String oldKey = username + "/" + newBackgroundFileName;
+        String newBackgroundFileName = filename.substring(filename.lastIndexOf('/') + 1);
+        String oldKey = request.getIsAdmin() ? filename : username + "/" + newBackgroundFileName;
         String newKey = activeDir + newBackgroundFileName;
         s3ServiceImpl.copyFile(oldKey, newKey);
     }

@@ -1,8 +1,6 @@
 package games.poker.processor.s3files;
 
 import games.poker.dto.processor.S3FilesProcessorDto;
-import games.poker.dto.request.S3RequestDto;
-import games.poker.dto.response.S3FilesResponseDto;
 import games.poker.service.S3ServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.Exchange;
@@ -12,19 +10,18 @@ import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
-public class GetS3FilesProcessor implements Processor {
+public class S3UploadUrlProcessor implements Processor {
 
     @Autowired
     private S3ServiceImpl s3ServiceImpl;
 
     @Override
-    public void process(Exchange exchange) {
+    public void process(Exchange exchange) throws Exception {
         S3FilesProcessorDto processorDto = exchange.getIn().getBody(S3FilesProcessorDto.class);
-        S3RequestDto request = processorDto.getRequest();
-        log.info("Processing get file names request: {}", request);
 
-        String username = request.getUsername();
-        Boolean isAdmin = request.getIsAdmin();
-        processorDto.setFiles(s3ServiceImpl.getFiles(isAdmin ? "" : username + "/"));
+        log.info("Processing upload URL request: {}", processorDto.getRequest());
+        String username = processorDto.getRequest().getUsername();
+        String filename = processorDto.getRequest().getFilename();
+        processorDto.setUploadUrl(s3ServiceImpl.getUploadUrl(username + "/" + filename));
     }
 }

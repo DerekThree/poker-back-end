@@ -10,11 +10,12 @@ import org.springframework.web.multipart.MultipartFile;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class S3FilesRequestDto {
+public class S3RequestDto {
 
     private String method;
 
     private String username;
+    private Boolean isAdmin;
 
     private String filename;
 

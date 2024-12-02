@@ -11,6 +11,8 @@ public interface S3Service {
 
     List<FileData> getFiles(String prefix);
 
+    String getUploadUrl(String key);
+
     InputStreamResource getFile(String key);
 
     void postFile(String prefix, MultipartFile file);

@@ -29,12 +29,17 @@ public class RegisterUserProcessor implements Processor {
         log.info("Processing register user request: {}", request);
         String username = request.getProfile().getEmail();
         ResponseEntity<String> response = ResponseEntity.ok().body(username + " created using IdP");
+
+        // if user registered with credentials
         if (request.getCredentials() != null) {
             response = oktaService.registerUser(request);
-        }
-        if (request.getCredentials() == null ||  response.getStatusCode().is2xxSuccessful()) {
             s3Service.createNewUserFiles(username);
         }
+        // if user files don't exist
+        else if (s3Service.getFiles(username).isEmpty()) {
+            s3Service.createNewUserFiles(username);
+        }
+
         processorDto.setResponse(response);
     }
 }

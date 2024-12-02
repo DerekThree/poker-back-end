@@ -1,7 +1,7 @@
 package games.poker.processor.s3files;
 
 import games.poker.dto.processor.S3FilesProcessorDto;
-import games.poker.dto.request.S3FilesRequestDto;
+import games.poker.dto.request.S3RequestDto;
 import games.poker.service.S3ServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.Exchange;
@@ -17,10 +17,11 @@ public class DeleteS3FilesProcessor implements Processor {
 
     @Override
     public void process(Exchange exchange) {
-        S3FilesRequestDto request = exchange.getIn().getBody(S3FilesProcessorDto.class).getRequest();
+        S3RequestDto request = exchange.getIn().getBody(S3FilesProcessorDto.class).getRequest();
 
         log.info("Processing delete file request: {}", request);
-        String key = request.getUsername() + "/" + request.getFilename();
+        boolean isAdmin = request.getIsAdmin();
+        String key = isAdmin ? request.getFilename() : request.getUsername() + "/" + request.getFilename();
         s3ServiceImpl.deleteFile(key);
     }
 }

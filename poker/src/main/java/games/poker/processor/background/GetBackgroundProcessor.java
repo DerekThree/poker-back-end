@@ -31,7 +31,7 @@ public class GetBackgroundProcessor implements Processor {
             log.warn("Multiple files found in active background directory: {}", files);
         }
 
-        String fileKey = prefix + files.get(0).getName();
+        String fileKey = files.isEmpty() ? "default.jpg" : prefix + files.get(0).getName();
         processorDto.setResponse(s3ServiceImpl.getFile(fileKey));
     }
 }

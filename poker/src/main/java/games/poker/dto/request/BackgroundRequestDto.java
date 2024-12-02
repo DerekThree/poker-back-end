@@ -14,6 +14,7 @@ public class BackgroundRequestDto {
     private String method;
 
     private String username;
+    private Boolean isAdmin;
 
     private String filename;
 }

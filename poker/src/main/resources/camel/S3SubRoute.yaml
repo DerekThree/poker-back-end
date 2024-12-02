@@ -1,0 +1,17 @@
+- route:
+    id: s3SubRoute
+    from:
+      uri: direct:s3ComplexFiles
+      steps:
+        - choice:
+            when:
+              - simple: "${in.body.request.method} == 'post'"
+                steps:
+                  - process:
+                      ref: postS3FilesProcessor
+              - simple: "${in.body.request.method} == 'delete'"
+                steps:
+                  - process:
+                      ref: deleteS3FilesProcessor
+        - process:
+            ref: getS3FilesProcessor

@@ -5,13 +5,15 @@
       steps:
         - choice:
             when:
-              - simple: "${in.body.request.method} == 'post'"
+              - simple: "${in.body.request.method} == 'put'"
                 steps:
+                  - log:
+                      message: "Processing simple S3 request for put method"
                   - process:
-                      ref: postS3FilesProcessor
-              - simple: "${in.body.request.method} == 'delete'"
-                steps:
-                  - process:
-                      ref: deleteS3FilesProcessor
-        - process:
-            ref: getS3FilesProcessor
+                      ref: s3UploadUrlProcessor
+            otherwise:
+              steps:
+                - log:
+                      message: "Processing complex S3 request. Sub-route needed"
+                - to:
+                    uri: "direct:s3ComplexFiles"

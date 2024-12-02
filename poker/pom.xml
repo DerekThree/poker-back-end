@@ -133,8 +133,6 @@
 			<artifactId>spring-kafka</artifactId>
 			<version>3.3.0</version>
 		</dependency>
-
-
 		<!-- End AWS -->
 
 	</dependencies>
@@ -144,12 +142,8 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
-			</plugin>
-			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
 				<configuration>
-					<mainClass>com.baeldung.spring.kafka.KafkaApplication</mainClass>
+					<mainClass>games.poker.PokerApplication</mainClass>
 				</configuration>
 			</plugin>
 		</plugins>

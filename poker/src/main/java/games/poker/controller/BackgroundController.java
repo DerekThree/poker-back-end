@@ -19,9 +19,11 @@ public class BackgroundController {
     private ProducerTemplate producerTemplate;
 
     @PostMapping(value = "/getActive")
-    public ResponseEntity<InputStreamResource> getActiveBackground(@RequestBody BackgroundRequestDto request) {
+    public ResponseEntity<InputStreamResource> getActiveBackground(@RequestHeader("X-Username") String username,
+                                                                   @RequestBody BackgroundRequestDto request) {
         log.info("Received get background request: {}", request);
         request.setMethod("get");
+        request.setUsername(username);
 
         var processorDto = BackgroundProcessorDto.builder().request(request).build();
 
@@ -35,9 +37,13 @@ public class BackgroundController {
     }
 
     @PostMapping(value = "/setActive")
-    public ResponseEntity<InputStreamResource> setActiveBackground(@RequestBody BackgroundRequestDto request) {
+    public ResponseEntity<InputStreamResource> setActiveBackground(@RequestHeader("X-Username") String username,
+                                                                   @RequestHeader("X-Is-Admin") String isAdmin,
+                                                                   @RequestBody BackgroundRequestDto request) {
         log.info("Received set background request: {}", request);
         request.setMethod("put");
+        request.setUsername(username);
+        request.setIsAdmin(isAdmin != null && isAdmin.equals("true"));
 
         var backgroundProcessorDto = BackgroundProcessorDto.builder().request(request).build();
 

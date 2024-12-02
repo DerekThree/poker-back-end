@@ -1,11 +1,14 @@
 package games.poker.dto.processor;
 
-import games.poker.dto.request.S3FilesRequestDto;
+import games.poker.dto.request.S3RequestDto;
 import games.poker.dto.response.S3FilesResponseDto;
+import games.poker.model.FileData;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Data
 @Builder
@@ -13,7 +16,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class S3FilesProcessorDto {
 
-    private S3FilesRequestDto request;
+    private S3RequestDto request;
 
-    private S3FilesResponseDto response;
+    private List<FileData> files;
+
+    private String uploadUrl;
 }
